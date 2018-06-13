@@ -51,16 +51,22 @@ def analyze_by_substring(sentence):
     is_word_detected = False
     joke_list=["A very selfish dad say to his children : if you are quiet today, i will show you the picture of"
                " someone who is eating an ice cream","Two eggs are in a microwave. The first egg say to the other one "
-                                                     "'''''''''''''''''''''eeeh you are so hairy !! how is that"
-                                                     " possible ??? So the other one answers '''''''''''''' I'm a "
-                                                     "Kiwi you idiot"
+                                                     "'''''''''''''''''''''eeeh why are you so green ?"
+                                                     " why are you so haiiry"
+                                                     "? So the other one answers '''''''''''''' I'm a "
+                                                     "Kiwi you idiot","what is the biggest Apple phone ? ''''''''''''"
+                                                                      "'''''''''''''''''''''''''''the Big Mac"
                 ,"Two men sleep in a tent. Suddenly everything start moving in the tent. One of the guy wakes up. "
                "he looks at his friend and say ....Wooow what the hell are you doing. His friend answer ......."
                "well I am masturbating, what is wrong with that ?"
                "o he answers........well then use your own dick bro", "How do you call a span that hurts ? ..."
                                                                       "....................................."
                                                                       "..................;;;;;;;;;.a spanking ....."
-                                                                      "looool",
+                                                                      "looool","Toto arrives to the doctor. The doctor "
+                                                                               "says to Toto he has only two months "
+                                                                               "left to live. Toto answers '''''''''''"
+                                                                               "''''''''''it is not a problem, "
+                                                                               "I will take july and august",
                "what is the difference between spinach and sodomy ? ''''''''''''''''''''''''''''''''''"
                "''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''There is no difference. You can a"
                "dd as much butter as you want, the children doesnt like that"]
@@ -88,7 +94,7 @@ def analyze_by_substring(sentence):
 
 def analyze_by_keywords(sentence):
     is_word_detected = False
-    hello_list = ["yo","greetings", "hey", "hello", "boker", "chalom", "hola"]
+    hello_list = ["greetings", "hey", "hello", "boker", "chalom", "hola"]
     love_words_list = ["love", "heart","sex",'girlfriend','boyfriend']
     hobbies_words_list = ["sport", "soccer", "football", 'hobbies', 'baseball','leisure','world cup']
     hobbies_words_list += [word + "s" for word in hobbies_words_list ]
