@@ -8,11 +8,19 @@ import json
 def meta_input_analysis(sentence):
     is_valid_input(sentence)
     if is_valid_input(sentence) == None :
-        analyze_by_keywords(sentence)
-        if analyze_by_keywords(sentence) == None :
-            return "meta analysis : failed to interpret"
+        analyze_by_substring(sentence)
+        if analyze_by_substring(sentence)== None:
+            analyze_by_keywords(sentence)
+            if analyze_by_keywords(sentence) == None:
+                is_exclamation(sentence)
+                if is_exclamation(sentence) == None :
+                    return "Soooo I guess your name is {0}. Nice to meet you".format(sentence)
+                else:
+                    return is_exclamation(sentence)
+            else:
+                return analyze_by_keywords(sentence)
         else:
-            return analyze_by_keywords(sentence)
+            return  analyze_by_substring(sentence)
     else:
          return is_valid_input(sentence)
 
@@ -38,10 +46,40 @@ def is_valid_input(sentence):
 
     return chat_answer
 
+def analyze_by_substring(sentence):
+    is_word_detected = False
+    whatsup_list = ["since last time","how are you doing","how are you", "what's up","whats up" ,'hey dude',
+                    'what"s new']
+    define_boto_list = ["who are you", "what is boto", 'your job']
+    main_list = [whatsup_list,define_boto_list]
+    if isinstance(sentence, str):
+        for sublist in main_list:
+            for word in sublist:
+                if word in sentence and sublist is whatsup_list:
+                    answer_by_substring = "Hey! I am doing super great since you arrived !"
+                    is_word_detected = True
+                elif word in sentence and sublist is define_boto_list:
+                    answer_by_substring = "I am Boto, the best vocal chat. Siri is not half the bot I am !"
+                    is_word_detected = True
+    chat_answer = None if not is_word_detected else answer_by_substring
+    return chat_answer
+
+
+def is_exclamation(sentence):
+    is_word_detected = False
+    for word in sentence:
+        if word == "!":
+            answer_if_exclamation = "You are too excited for me bro. Calm your fingers"
+            is_word_detected = True
+    chat_answer = None if not is_word_detected else answer_if_exclamation
+
+    return chat_answer
+
+
 
 def analyze_by_keywords(sentence):
     is_word_detected = False
-    hello_list = ["hi", "hey", "hello", "boker", "chalom", "hola"]
+    hello_list = ["yo","greetings", "hey", "hello", "boker", "chalom", "hola"]
     love_words_list = ["love", "heart","sex",'girlfriend','boyfriend']
     hobbies_words_list = ["sport", "soccer", "football", 'hobbies', 'baseball','leisure','world cup']
     hobbies_words_list += [word + "s" for word in hobbies_words_list ]
@@ -52,10 +90,10 @@ def analyze_by_keywords(sentence):
                 answer_by_keywords = "Love is a human emotion. I would love to feel how it is !"
                 is_word_detected = True
             elif word in sentence and sublist is hello_list:
-                answer_by_keywords = "hello my friend !"
+                answer_by_keywords = "{0} my friend !".format(word)
                 is_word_detected = True
             elif word in sentence and sublist is hobbies_words_list:
-                answer_by_keywords = "You talk about hobbies? I love soccer and France will win the world cup"
+                answer_by_keywords ="You talk about {0}? I love soccer and France will win the world cup".format(word)
                 is_word_detected = True
     chat_answer = None if not is_word_detected else answer_by_keywords
 
