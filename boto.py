@@ -4,6 +4,12 @@ This is the template server side for ChatBot
 from bottle import route, run, template, static_file, request
 import json
 
+
+def meta_analysis():
+    bad_words_list = ["fuck", "bitch", 'dick', 'pussy', 'nazi', 'motherfucker']
+    return bad_words_list
+
+
 def is_valid_input(sentence):
     bad_words_list = ["fuck", "bitch", 'dick', 'pussy','nazi','motherfucker']
     plural_bad_words_list = [word + "s" for word in bad_words_list]
