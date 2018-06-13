@@ -5,30 +5,62 @@ from bottle import route, run, template, static_file, request
 import json
 
 
-def meta_analysis():
-    bad_words_list = ["fuck", "bitch", 'dick', 'pussy', 'nazi', 'motherfucker']
-    return bad_words_list
+def meta_input_analysis(sentence):
+    is_valid_input(sentence)
+    if is_valid_input(sentence) == None :
+        analyze_by_keywords(sentence)
+        if analyze_by_keywords(sentence) == None :
+            return "meta analysis : failed to interpret"
+        else:
+            return analyze_by_keywords(sentence)
+    else:
+         return is_valid_input(sentence)
+
 
 
 def is_valid_input(sentence):
+    is_word_detected = False
     bad_words_list = ["fuck", "bitch", 'dick', 'pussy','nazi','motherfucker']
-    plural_bad_words_list = [word + "s" for word in bad_words_list]
-    if sentence in bad_words_list or plural_bad_words_list:
-        chat_answer = 'Eh calm down man. Get hit by a truck'
-    else :
-        chat_answer = None
+    troll_words_list = ["your mom", "corpse", 'suck']
+    main_list = [bad_words_list,troll_words_list]
+    if isinstance(sentence, str):
+        for sublist in main_list:
+            sublist += [word + "s" for word in sublist]
+            sublist += [word + "es" for word in sublist]
+            for word in sublist:
+                if word in sentence and sublist is bad_words_list:
+                    answer_by_error = "Words like that don't impress me, hey tough guy !"
+                    is_word_detected = True
+                elif word in sentence and sublist is troll_words_list:
+                    answer_by_error = "I am not 100% sure, but I think you are trolling me !"
+                    is_word_detected = True
+    chat_answer = None if not is_word_detected else answer_by_error
+
     return chat_answer
 
+
 def analyze_by_keywords(sentence):
-    hello_list = ["hi","hey","hello","boker","chalom","hola"]
-    love_words_list = ["love","sex"]
-    if sentence in love_words_list:
-        chat_answer = "Love is a human emotion. I would love to feel how it is !"
-    elif sentence in hello_list:
-        chat_answer = "Hello my friend how are you today?"
-    else:
-        chat_answer = "i dont understand"
+    is_word_detected = False
+    hello_list = ["hi", "hey", "hello", "boker", "chalom", "hola"]
+    love_words_list = ["love", "heart","sex",'girlfriend','boyfriend']
+    hobbies_words_list = ["sport", "soccer", "football", 'hobbies', 'baseball','leisure','world cup']
+    hobbies_words_list += [word + "s" for word in hobbies_words_list ]
+    main_list = [hello_list,love_words_list,hobbies_words_list]
+    for sublist in main_list:
+        for word in sublist:
+            if word in sentence and sublist is love_words_list:
+                answer_by_keywords = "Love is a human emotion. I would love to feel how it is !"
+                is_word_detected = True
+            elif word in sentence and sublist is hello_list:
+                answer_by_keywords = "hello my friend !"
+                is_word_detected = True
+            elif word in sentence and sublist is hobbies_words_list:
+                answer_by_keywords = "You talk about hobbies? I love soccer and France will win the world cup"
+                is_word_detected = True
+    chat_answer = None if not is_word_detected else answer_by_keywords
+
     return chat_answer
+
 
 @route('/', method='GET')
 def index():
@@ -38,8 +70,8 @@ def index():
 @route("/chat", method='POST')
 def chat():
     user_message = request.POST.get('msg')
-    analyze_by_keywords(user_message)
-    return json.dumps({"animation": "inlove", "msg": analyze_by_keywords(user_message)})
+    meta_input_analysis(user_message)
+    return json.dumps({"animation": "inlove", "msg":meta_input_analysis(user_message)})
 
 
 @route("/test", method='POST')
