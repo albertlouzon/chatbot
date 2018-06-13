@@ -1,6 +1,7 @@
 """
 This is the template server side for ChatBot
 """
+import random
 from bottle import route, run, template, static_file, request
 import json
 
@@ -48,33 +49,41 @@ def is_valid_input(sentence):
 
 def analyze_by_substring(sentence):
     is_word_detected = False
+    joke_list=["A very selfish dad say to his children : if you are quiet today, i will show you the picture of"
+               " someone who is eating an ice cream","Two eggs are in a microwave. The first egg say to the other one "
+                                                     "'''''''''''''''''''''eeeh you are so hairy !! how is that"
+                                                     " possible ??? So the other one answers '''''''''''''' I'm a "
+                                                     "Kiwi you idiot"
+                ,"Two men sleep in a tent. Suddenly everything start moving in the tent. One of the guy wakes up. "
+               "he looks at his friend and say ....Wooow what the hell are you doing. His friend answer ......."
+               "well I am masturbating, what is wrong with that ?"
+               "o he answers........well then use your own dick bro", "How do you call a span that hurts ? ..."
+                                                                      "....................................."
+                                                                      "..................;;;;;;;;;.a spanking ....."
+                                                                      "looool",
+               "what is the difference between spinach and sodomy ? ''''''''''''''''''''''''''''''''''"
+               "''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''There is no difference. You can a"
+               "dd as much butter as you want, the children doesnt like that"]
     whatsup_list = ["since last time","how are you doing","how are you", "what's up","whats up" ,'hey dude',
                     'what"s new']
     define_boto_list = ["who are you", "what is boto", 'your job']
     main_list = [whatsup_list,define_boto_list]
     if isinstance(sentence, str):
-        for sublist in main_list:
-            for word in sublist:
-                if word in sentence and sublist is whatsup_list:
-                    answer_by_substring = "Hey! I am doing super great since you arrived !"
-                    is_word_detected = True
-                elif word in sentence and sublist is define_boto_list:
-                    answer_by_substring = "I am Boto, the best vocal chat. Siri is not half the bot I am !"
-                    is_word_detected = True
+        if 'a joke' in sentence:
+            rand = random.randint(0,len(joke_list)-1)
+            answer_by_substring = "Listen to this one : {0}".format(joke_list[rand])
+            is_word_detected = True
+        else:
+            for sublist in main_list:
+                for word in sublist:
+                    if word in sentence and sublist is whatsup_list:
+                        answer_by_substring = "Hey! I am doing super great since you arrived !"
+                        is_word_detected = True
+                    elif word in sentence and sublist is define_boto_list:
+                        answer_by_substring = "I am Boto, the best vocal chat. Siri is not half the bot I am !"
+                        is_word_detected = True
     chat_answer = None if not is_word_detected else answer_by_substring
     return chat_answer
-
-
-def is_exclamation(sentence):
-    is_word_detected = False
-    for word in sentence:
-        if word == "!":
-            answer_if_exclamation = "You are too excited for me bro. Calm your fingers"
-            is_word_detected = True
-    chat_answer = None if not is_word_detected else answer_if_exclamation
-
-    return chat_answer
-
 
 
 def analyze_by_keywords(sentence):
@@ -96,6 +105,18 @@ def analyze_by_keywords(sentence):
                 answer_by_keywords ="You talk about {0}? I love soccer and France will win the world cup".format(word)
                 is_word_detected = True
     chat_answer = None if not is_word_detected else answer_by_keywords
+
+    return chat_answer
+
+
+
+def is_exclamation(sentence):
+    is_word_detected = False
+    for word in sentence:
+        if word == "!":
+            answer_if_exclamation = "You are too excited for me bro. Calm your fingers"
+            is_word_detected = True
+    chat_answer = None if not is_word_detected else answer_if_exclamation
 
     return chat_answer
 
