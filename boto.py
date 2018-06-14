@@ -7,29 +7,28 @@ import json
 from weather import Weather, Unit
 
 
-
-def meta_input_analysis(sentence):
-    is_valid_input(sentence)
-    if is_valid_input(sentence) == None :
-        analyze_by_substring(sentence)
-        if analyze_by_substring(sentence)== None:
-            analyze_by_keywords(sentence)
-            if analyze_by_keywords(sentence) == None:
-                is_exclamation(sentence)
-                if is_exclamation(sentence) == None :
-                    return "Soooo I guess your name is {0}. Nice to meet you".format(sentence)
+def meta_input_analysis(sentence,animation):
+    is_valid_input(sentence,animation)
+    if is_valid_input(sentence,animation) == None :
+        analyze_by_substring(sentence,animation)
+        if analyze_by_substring(sentence,animation)== None:
+            analyze_by_keywords(sentence,animation)
+            if analyze_by_keywords(sentence,animation) == None:
+                is_exclamation(sentence,animation)
+                if is_exclamation(sentence,animation) == None :
+                    return ("Soooo I guess your name is {0}. Nice to meet you".format(sentence) , "excited")
                 else:
-                    return is_exclamation(sentence)
+                    return is_exclamation(sentence,animation)
             else:
-                return analyze_by_keywords(sentence)
+                return analyze_by_keywords(sentence,animation)
         else:
-            return  analyze_by_substring(sentence)
+            return  analyze_by_substring(sentence,animation)
     else:
-         return is_valid_input(sentence)
+         return is_valid_input(sentence,animation)
 
 
 
-def is_valid_input(sentence):
+def is_valid_input(sentence,animation):
     is_word_detected = False
     bad_words_list = ["fuck", "bitch", 'dick', 'pussy','nazi','motherfucker']
     troll_words_list = ["your mom", "corpse", 'suck']
@@ -41,15 +40,17 @@ def is_valid_input(sentence):
             for word in sublist:
                 if word in sentence and sublist is bad_words_list:
                     answer_by_error = "Words like that don't impress me, hey tough guy !"
+                    animation = 'no'
                     is_word_detected = True
                 elif word in sentence and sublist is troll_words_list:
-                    answer_by_error = "I am not 100% sure, but I think you are trolling me !"
+                    answer_by_error = "I am not 100% sure, but I think you are trolling me!"
+                    animation = 'confused'
                     is_word_detected = True
-    chat_answer = None if not is_word_detected else answer_by_error
+    chat_answer = None if not is_word_detected else (answer_by_error,animation)
 
     return chat_answer
 
-def analyze_by_substring(sentence):
+def analyze_by_substring(sentence,animation):
     is_word_detected = False
     joke_list=["A very selfish dad say to his children : if you are quiet today, i will show you the picture of"
                " someone who is eating an ice cream","Two eggs are in a microwave. The first egg say to the other one "
@@ -77,41 +78,48 @@ def analyze_by_substring(sentence):
     define_boto_list = ["who are you", "what is boto", 'your job']
     main_list = [whatsup_list,define_boto_list]
     weather = Weather(unit=Unit.CELSIUS)
-    user_city = 'Jerusalem'
 
     if isinstance(sentence, str):
         if 'a joke' in sentence:
             rand = random.randint(0,len(joke_list)-1)
             answer_by_substring = "Listen to this one : {0}".format(joke_list[rand])
+            animation = "laughing"
             is_word_detected = True
         elif 'weather in' in sentence:
             index_in = sentence.find('in')
             city_start_index = index_in + 3
             user_city = sentence[city_start_index:]
             location = weather.lookup_by_location(user_city)
-            forecasts = location.forecast
-            weather_type = forecasts[0].text
-            weather_min = forecasts[0].low
-            weather_max = forecasts[0].high
-            answer_by_substring ="Today the weather in {0} will be {1}.Temperature will vary from" \
-                                 " {2}°Celcius to {3}°celcius".format(user_city,weather_type,weather_min,weather_max )
-            is_word_detected = True
+            if location is None:
+                is_word_detected = False
+            else:
+                forecasts = location.forecast
+                weather_type = forecasts[0].text
+                weather_min = forecasts[0].low
+                weather_max = forecasts[0].high
+                answer_by_substring ="Today the weather in {0} will be {1}.Temperature will vary from" \
+                                     " {2}°Celcius to {3}°celcius".format(user_city,weather_type,
+                                                                          weather_min,weather_max )
+                animation = "waiting"
+                is_word_detected = True
         else:
             for sublist in main_list:
                 for word in sublist:
                     if word in sentence and sublist is whatsup_list:
                         answer_by_substring = "Hey! I am doing super great since you arrived !"
                         is_word_detected = True
+                        animation = "dog"
                     elif word in sentence and sublist is define_boto_list:
                         answer_by_substring = "I am Boto, the best vocal chat. Siri is not half the bot I am !"
+                        animation = "dancing"
                         is_word_detected = True
-    chat_answer = None if not is_word_detected else answer_by_substring
+    chat_answer = None if not is_word_detected else (answer_by_substring,animation)
     return chat_answer
 
 
 
 
-def analyze_by_keywords(sentence):
+def analyze_by_keywords(sentence,animation):
     is_word_detected = False
     hello_list = ["greetings", "hey", "hello", "boker", "chalom", "hola"]
     love_words_list = ["love", "heart","sex",'girlfriend','boyfriend']
@@ -122,24 +130,28 @@ def analyze_by_keywords(sentence):
         for word in sublist:
             if word in sentence and sublist is love_words_list:
                 answer_by_keywords = "Love is a human emotion. I would love to feel how it is !"
+                animation = "heartbroke"
                 is_word_detected = True
             elif word in sentence and sublist is hello_list:
                 answer_by_keywords = "{0} my friend !".format(word)
                 is_word_detected = True
+                animation = "ok"
             elif word in sentence and sublist is hobbies_words_list:
                 answer_by_keywords ="You talk about {0}? I love soccer and France will win the world cup".format(word)
+                animation = "inlove"
                 is_word_detected = True
-    chat_answer = None if not is_word_detected else answer_by_keywords
+    chat_answer = None if not is_word_detected else (answer_by_keywords,animation)
 
     return chat_answer
 
 
 
-def is_exclamation(sentence):
+def is_exclamation(sentence,animation):
     is_word_detected = False
     for word in sentence:
         if word == "!":
             answer_if_exclamation = "You are too excited for me bro. Calm your fingers"
+            animation = "excited"
             is_word_detected = True
     chat_answer = None if not is_word_detected else answer_if_exclamation
 
@@ -153,9 +165,11 @@ def index():
 
 @route("/chat", method='POST')
 def chat():
+    boto_animation = "in love"
     user_message = request.POST.get('msg')
-    meta_input_analysis(user_message)
-    return json.dumps({"animation": "inlove", "msg":meta_input_analysis(user_message)})
+    meta_input_analysis(user_message,boto_animation)
+    return json.dumps({"animation": meta_input_analysis(user_message,boto_animation)[1],
+                       "msg":meta_input_analysis(user_message,boto_animation)[0]})
 
 
 @route("/test", method='POST')
