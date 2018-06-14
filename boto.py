@@ -16,7 +16,8 @@ def meta_input_analysis(sentence,animation):
             if analyze_by_keywords(sentence,animation) == None:
                 is_exclamation(sentence,animation)
                 if is_exclamation(sentence,animation) == None :
-                    return ("Soooo I guess your name is {0}. Nice to meet you".format(sentence) , "excited")
+                    tepu = ("Sooo I guess your name is {0}. Nice to meet you".format(sentence),'excited')
+                    return tepu
                 else:
                     return is_exclamation(sentence,animation)
             else:
@@ -24,7 +25,7 @@ def meta_input_analysis(sentence,animation):
         else:
             return  analyze_by_substring(sentence,animation)
     else:
-         return is_valid_input(sentence,animation)
+        return is_valid_input(sentence,animation)
 
 
 
@@ -151,9 +152,9 @@ def is_exclamation(sentence,animation):
     for word in sentence:
         if word == "!":
             answer_if_exclamation = "You are too excited for me bro. Calm your fingers"
-            animation = "excited"
+            animation = "giggling"
             is_word_detected = True
-    chat_answer = None if not is_word_detected else answer_if_exclamation,animation
+    chat_answer = None if not is_word_detected else (answer_if_exclamation,animation)
 
     return chat_answer
 
@@ -165,11 +166,11 @@ def index():
 
 @route("/chat", method='POST')
 def chat():
-    boto_animation = "in love"
+    boto_animation = "ok"
     user_message = request.POST.get('msg')
     meta_input_analysis(user_message,boto_animation)
     return json.dumps({"animation": meta_input_analysis(user_message,boto_animation)[1],
-                       "msg":meta_input_analysis(user_message,boto_animation)[0]})
+                       "msg": meta_input_analysis(user_message,boto_animation)[0]})
 
 
 @route("/test", method='POST')
