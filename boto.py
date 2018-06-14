@@ -91,7 +91,7 @@ def analyze_by_substring(sentence,animation):
             city_start_index = index_in + 3
             user_city = sentence[city_start_index:]
             location = weather.lookup_by_location(user_city)
-            if location is None:
+            if location == None:
                 is_word_detected = False
             else:
                 forecasts = location.forecast
@@ -99,7 +99,7 @@ def analyze_by_substring(sentence,animation):
                 weather_min = forecasts[0].low
                 weather_max = forecasts[0].high
                 answer_by_substring ="Today the weather in {0} will be {1}.Temperature will vary from" \
-                                     " {2}°Celcius to {3}°celcius".format(user_city,weather_type,
+                                     " {2}°Celcius to {3}°Celcius".format(user_city,weather_type,
                                                                           weather_min,weather_max )
                 animation = "waiting"
                 is_word_detected = True
@@ -126,7 +126,17 @@ def analyze_by_keywords(sentence,animation):
     love_words_list = ["love", "heart","sex",'girlfriend','boyfriend']
     hobbies_words_list = ["sport", "soccer", "football", 'hobbies', 'baseball','leisure','world cup']
     hobbies_words_list += [word + "s" for word in hobbies_words_list ]
-    main_list = [hello_list,love_words_list,hobbies_words_list]
+    activities_list = ["shopping", "coffee", "hang out", "party", "drink", "laugh","cinema","cream"]
+    religion_list = ["hachem", "god", "allah", "allah akbar", "believer", "satan",
+                     "darwin", "evolutionnism","bible","torah"]
+    doesnt_exist_list = ["santa", "palestine", "gaza", "alien", "monster", "ghost"]
+    music_list = ["youtube", "spotify", "music", "lyric", "hip hop", "rnb",'song']
+    music_list += [word + "s" for word in music_list]
+    activities_list += [word + "s" for word in activities_list]
+    religion_list += [word + "s" for word in religion_list]
+    doesnt_exist_list += [word + "s" for word in doesnt_exist_list]
+    main_list = [hello_list,love_words_list,hobbies_words_list,
+                 activities_list,religion_list,doesnt_exist_list,music_list]
     for sublist in main_list:
         for word in sublist:
             if word in sentence and sublist is love_words_list:
@@ -140,6 +150,18 @@ def analyze_by_keywords(sentence,animation):
             elif word in sentence and sublist is hobbies_words_list:
                 answer_by_keywords ="You talk about {0}? I love soccer and France will win the world cup".format(word)
                 animation = "inlove"
+                is_word_detected = True
+            elif word in sentence and sublist is activities_list:
+                answer_by_keywords ="{0} would be a wonderful activity to do with you!!!".format(word)
+                animation = "takeoff"
+                is_word_detected = True
+            elif word in sentence and sublist is religion_list:
+                answer_by_keywords ="My spirituality is quite limited. I believe that 2 + 2 = 4".format(word)
+                animation = "takeoff"
+                is_word_detected = True
+            elif word in sentence and sublist is doesnt_exist_list:
+                answer_by_keywords ="{0} does not exist bro. Deal with it".format(word)
+                animation = "giggling"
                 is_word_detected = True
     chat_answer = None if not is_word_detected else (answer_by_keywords,animation)
 
