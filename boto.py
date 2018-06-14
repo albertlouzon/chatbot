@@ -153,7 +153,7 @@ def is_exclamation(sentence,animation):
             answer_if_exclamation = "You are too excited for me bro. Calm your fingers"
             animation = "excited"
             is_word_detected = True
-    chat_answer = None if not is_word_detected else answer_if_exclamation
+    chat_answer = None if not is_word_detected else answer_if_exclamation,animation
 
     return chat_answer
 
