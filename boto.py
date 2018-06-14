@@ -4,6 +4,8 @@ This is the template server side for ChatBot
 import random
 from bottle import route, run, template, static_file, request
 import json
+from weather import Weather, Unit
+
 
 
 def meta_input_analysis(sentence):
@@ -74,10 +76,25 @@ def analyze_by_substring(sentence):
                     'what"s new']
     define_boto_list = ["who are you", "what is boto", 'your job']
     main_list = [whatsup_list,define_boto_list]
+    weather = Weather(unit=Unit.CELSIUS)
+    user_city = 'Jerusalem'
+
     if isinstance(sentence, str):
         if 'a joke' in sentence:
             rand = random.randint(0,len(joke_list)-1)
             answer_by_substring = "Listen to this one : {0}".format(joke_list[rand])
+            is_word_detected = True
+        elif 'weather in' in sentence:
+            index_in = sentence.find('in')
+            city_start_index = index_in + 3
+            user_city = sentence[city_start_index:]
+            location = weather.lookup_by_location(user_city)
+            forecasts = location.forecast
+            weather_type = forecasts[0].text
+            weather_min = forecasts[0].low
+            weather_max = forecasts[0].high
+            answer_by_substring ="Today the weather in {0} will be {1}.Temperature will vary from" \
+                                 " {2}°Celcius to {3}°celcius".format(user_city,weather_type,weather_min,weather_max )
             is_word_detected = True
         else:
             for sublist in main_list:
@@ -90,6 +107,8 @@ def analyze_by_substring(sentence):
                         is_word_detected = True
     chat_answer = None if not is_word_detected else answer_by_substring
     return chat_answer
+
+
 
 
 def analyze_by_keywords(sentence):
