@@ -16,8 +16,8 @@ def meta_input_analysis(sentence,animation):
             if analyze_by_keywords(sentence,animation) == None:
                 is_exclamation(sentence,animation)
                 if is_exclamation(sentence,animation) == None :
-                    tepu = ("Sooo I guess your name is {0}. Nice to meet you".format(sentence),'excited')
-                    return tepu
+                    name = ("Sooo I guess your name is {0}. Nice to meet you".format(sentence),'excited')
+                    return name
                 else:
                     return is_exclamation(sentence,animation)
             else:
