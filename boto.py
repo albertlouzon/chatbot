@@ -32,7 +32,7 @@ def meta_input_analysis(sentence,animation):
 def is_valid_input(sentence,animation):
     is_word_detected = False
     bad_words_list = ["fuck", "bitch", 'dick', 'pussy','nazi','motherfucker']
-    troll_words_list = ["your mom", "corpse", 'suck']
+    troll_words_list = ["your mom", "corpse", 'suck',"porn"]
     main_list = [bad_words_list,troll_words_list]
     if isinstance(sentence, str):
         for sublist in main_list:
@@ -60,10 +60,7 @@ def analyze_by_substring(sentence,animation):
                                                      "? So the other one answers '''''''''''''' I'm a "
                                                      "Kiwi you idiot","what is the biggest Apple phone ? ''''''''''''"
                                                                       "'''''''''''''''''''''''''''the Big Mac"
-                ,"Two men sleep in a tent. Suddenly everything start moving in the tent. One of the guy wakes up. "
-               "he looks at his friend and say ....Wooow what the hell are you doing. His friend answer ......."
-               "well I am masturbating, what is wrong with that ?"
-               "o he answers........well then use your own dick bro", "How do you call a span that hurts ? ..."
+                , "How do you call a span that hurts ? ..."
                                                                       "....................................."
                                                                       "..................;;;;;;;;;.a spanking ....."
                                                                       "looool","Toto arrives to the doctor. The doctor "
@@ -129,7 +126,7 @@ def analyze_by_keywords(sentence,animation):
     activities_list = ["shopping", "coffee", "hang out", "party", "drink", "laugh","cinema","cream"]
     religion_list = ["hachem", "god", "allah", "allah akbar", "believer", "satan",
                      "darwin", "evolutionnism","bible","torah"]
-    doesnt_exist_list = ["santa", "palestine", "gaza", "alien", "monster", "ghost"]
+    doesnt_exist_list = ["santa", "palestine", "alien", "monster", "ghost"]
     music_list = ["youtube", "spotify", "music", "lyric", "hip hop", "rnb",'song']
     music_list += [word + "s" for word in music_list]
     activities_list += [word + "s" for word in activities_list]
