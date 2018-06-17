@@ -2,12 +2,13 @@
 This is the template server side for ChatBot
 """
 import random
-from bottle import route, run, template, static_file, request
+from bottle import route, run, template, static_file, request, response
 import json
 from weather import Weather, Unit
 
 
 def meta_input_analysis(sentence,animation):
+    sentence = sentence.lower()
     is_valid_input(sentence,animation)
     if is_valid_input(sentence,animation) == None :
         analyze_by_substring(sentence,animation)
@@ -16,8 +17,17 @@ def meta_input_analysis(sentence,animation):
             if analyze_by_keywords(sentence,animation) == None:
                 is_exclamation(sentence,animation)
                 if is_exclamation(sentence,animation) == None :
-                    name = ("Sooo I guess your name is {0}. Nice to meet you".format(sentence),'excited')
-                    return name
+                    user_name = request.get_cookie("user_name")
+                    if user_name:
+                        return "I don't understand {0}".format(json.dumps(user_name)), "confused"
+                    else:
+                        my_dict = {
+                            "input_is_name": sentence
+                        }
+                        response.set_cookie(name="user_name",
+                                            value=sentence)
+                        return "Sooo I guess your name is {0}. Nice to meet" \
+                               " you".format(json.dumps(my_dict["input_is_name"])) , "ok"
                 else:
                     return is_exclamation(sentence,animation)
             else:
@@ -73,8 +83,9 @@ def analyze_by_substring(sentence,animation):
                "dd as much butter as you want, the children doesnt like that"]
     whatsup_list = ["since last time","how are you doing","how are you", "what's up","whats up" ,'hey dude',
                     'what"s new']
-    define_boto_list = ["who are you", "what is boto", 'your job']
-    main_list = [whatsup_list,define_boto_list]
+    define_boto_list = ["who are you", "what is boto", 'your job',"your name"]
+    apology_list = ["forgive me", "i am sorry", 'sorry boto', "my bad"]
+    main_list = [whatsup_list,define_boto_list,apology_list]
     weather = Weather(unit=Unit.CELSIUS)
 
     if isinstance(sentence, str):
@@ -111,6 +122,10 @@ def analyze_by_substring(sentence,animation):
                         answer_by_substring = "I am Boto, the best vocal chat. Siri is not half the bot I am !"
                         animation = "dancing"
                         is_word_detected = True
+                    elif word in sentence and sublist is apology_list:
+                        answer_by_substring = "It's ok. Being mad at you is not in my code "
+                        animation = "heartbroke"
+                        is_word_detected = True
     chat_answer = None if not is_word_detected else (answer_by_substring,animation)
     return chat_answer
 
@@ -128,39 +143,47 @@ def analyze_by_keywords(sentence,animation):
                      "darwin", "evolutionnism","bible","torah"]
     doesnt_exist_list = ["santa", "palestine", "alien", "monster", "ghost"]
     music_list = ["youtube", "spotify", "music", "lyric", "hip hop", "rnb",'song']
+    apology_name_list = ["sorry", "apology", "ok"]
+    user_name_list = ["name","boto","introduce"]
     music_list += [word + "s" for word in music_list]
     activities_list += [word + "s" for word in activities_list]
     religion_list += [word + "s" for word in religion_list]
     doesnt_exist_list += [word + "s" for word in doesnt_exist_list]
     main_list = [hello_list,love_words_list,hobbies_words_list,
-                 activities_list,religion_list,doesnt_exist_list,music_list]
-    for sublist in main_list:
-        for word in sublist:
-            if word in sentence and sublist is love_words_list:
-                answer_by_keywords = "Love is a human emotion. I would love to feel how it is !"
-                animation = "heartbroke"
-                is_word_detected = True
-            elif word in sentence and sublist is hello_list:
-                answer_by_keywords = "{0} my friend !".format(word)
-                is_word_detected = True
-                animation = "ok"
-            elif word in sentence and sublist is hobbies_words_list:
-                answer_by_keywords ="You talk about {0}? I love soccer and France will win the world cup".format(word)
-                animation = "inlove"
-                is_word_detected = True
-            elif word in sentence and sublist is activities_list:
-                answer_by_keywords ="{0} would be a wonderful activity to do with you!!!".format(word)
-                animation = "takeoff"
-                is_word_detected = True
-            elif word in sentence and sublist is religion_list:
-                answer_by_keywords ="My spirituality is quite limited. I believe that 2 + 2 = 4".format(word)
-                animation = "takeoff"
-                is_word_detected = True
-            elif word in sentence and sublist is doesnt_exist_list:
-                answer_by_keywords ="{0} does not exist bro. Deal with it".format(word)
-                animation = "giggling"
-                is_word_detected = True
-    chat_answer = None if not is_word_detected else (answer_by_keywords,animation)
+                 activities_list,religion_list,doesnt_exist_list,music_list,user_name_list]
+    if any(word in sentence for word in apology_name_list):
+        answer_by_keywords = "No problem"
+        animation = "laughing"
+        is_word_detected = True
+    else:
+        for sublist in main_list:
+            for word in sublist:
+                if word in sentence and sublist is love_words_list:
+                    answer_by_keywords = "Love is a human emotion. I would love to feel how it is !"
+                    animation = "heartbroke"
+                    is_word_detected = True
+                elif word in sentence and sublist is hello_list:
+                    answer_by_keywords = "{0} my friend !".format(word)
+                    is_word_detected = True
+                    animation = "ok"
+                elif word in sentence and sublist is hobbies_words_list:
+                    answer_by_keywords = "You talk about {0}? I love soccer and France will win the world cup".format(
+                        word)
+                    animation = "inlove"
+                    is_word_detected = True
+                elif word in sentence and sublist is activities_list:
+                    answer_by_keywords = "{0} would be a wonderful activity to do with you!!!".format(word)
+                    animation = "takeoff"
+                    is_word_detected = True
+                elif word in sentence and sublist is religion_list:
+                    answer_by_keywords = "My spirituality is quite limited. I believe that 2 + 2 = 4".format(word)
+                    animation = "takeoff"
+                    is_word_detected = True
+                elif word in sentence and sublist is doesnt_exist_list:
+                    answer_by_keywords = "{0} does not exist bro. Deal with it".format(word)
+                    animation = "giggling"
+                    is_word_detected = True
+    chat_answer = None if not is_word_detected else (answer_by_keywords, animation)
 
     return chat_answer
 
