@@ -1,0 +1,18 @@
+
+
+
+.tepu {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+
+ background-image:  url("http://informationcommunicationtechnology.com/wp-content/uploads/2018/06/Sky-Wallpaper-1.jpg") !important;
+ background-size: cover !important;
+ background-position: center !important;
+ background-repeat: no-repeat !important;
+}
+
+
+.statBoard{
+  position: fixed !important;
+}
